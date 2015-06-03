@@ -5,11 +5,11 @@ class MSM:
     def __init__(self,T):
         self.T = T
 
-    """ Return the stationary distribution of the given Markov chain.
-        Therefore, we compute the eigenvector of the transposed transition
-        matrix corresponding to eigenvalue one and normalize.
-    """    
-    def stationarydistribution(self):
+    def statDist(self):
+        """ Return the stationary distribution of the given Markov chain.
+            Therefore, we compute the eigenvector of the transposed transition
+            matrix corresponding to eigenvalue one and normalize.
+        """
         EW,EV = linalg.eig(self.T.transpose())
         # By theory, there is only one biggest eigenvalue 1. As the linalg.eig
         # function may not order the eigenvalues, we use argmax() to identify
@@ -18,9 +18,9 @@ class MSM:
         statdist = EV[:,EW.argmax()] / EV[:, EW.argmax()].sum()
         return statdist
 
-    """ Return the eigenvalues of the transition matrix as a numpy.ndarray
-    """ 
     def eigenvalues(self):
+        """ Return the eigenvalues of the transition matrix as a numpy.ndarray
+        """
         return linalg.eigvals(self.T) 
     
     # IS THiS REALLY WHAT WE WANT? Suppose only 2nd time scale is of interest
@@ -29,12 +29,12 @@ class MSM:
         tscale = -1*np.ones(len(EW))/np.log(EW)
         return tscale
 
-    def TPT(self, set):
+    def tpt(self, set):
         qminus = np.ones(len(T))
         qplus  = np.ones(len(T))
         n = len(qminus)
         f = np.zeros(shape=(n,n)) # discrete prob. curr.
-        pi = self.stationarydistribution()
+        pi = self.statDist()
         effprobcur = np.zeros(shape=(n,n))
         FAB = 0
         for i in range(0,n):
