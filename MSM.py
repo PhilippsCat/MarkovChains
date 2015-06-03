@@ -1,6 +1,7 @@
 import numpy as np
 import numpy.linalg as linalg
 import fractions as frac
+from collections import deque
 
 class InvalTransMatError(ValueError):
     """Raised in ctor of MSM when the matrix 
@@ -93,13 +94,17 @@ def period(g):
     def val(a, b):
         return a - b + 1
 
-    def bfs(node, lvl, lvls, per):
-        trans = g[node] > 0
-        nextN = []
-        for v in range(len(trans)):
+    lvls = {0 : 0} # node 0 is on lvl 0
+    Q = deque([0]) # queue of nodes to be processed
+    per = 0        # no actual period is set yet 
+
+    while Q:
+        w = Q.pop()
+        trans = g[w] > 0
+        for v in range(len(trans)):             
             if trans[v]:
-                if (v in lvls.keys()):
-                    p = val(lvls[node],lvls[v])
+                if (v in lvls.keys()): # v has already been visited
+                    p = val(lvls[w],lvls[v])
                     if (per == 0):
                         # set initial period
                         per = p
@@ -108,18 +113,10 @@ def period(g):
                     if (p > 1): 
                         per = frac.gcd(per,p)
                 else:
-                    nextN.append(v)
-                    lvls[v] = lvl + 1
+                    Q.appendleft(v)
+                    lvls[v] = lvls[w] + 1
 
-        if nextN:
-            pers = []
-            for v in nextN:
-                pers.append(bfs(v, lvl + 1, lvls, per))
-            return min(pers) 
-        else:
-            return per
-
-    return bfs(0, 0, {0 : 0}, 0)
+    return per
 
 class MSM:
     
