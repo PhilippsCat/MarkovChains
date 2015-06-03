@@ -2,6 +2,23 @@ class MSM:
     
     def __init__(self,T):
         self.T = T
+        self.statdist = self.stationarydistribution()
+        print "Open the 'help'-method if you need help"
+        
+    def help(self):
+        from Tkinter import *
+
+        root = Tk()
+        frame = Frame(root)
+        frame.pack()
+
+        text = Text(root)
+        text.insert(INSERT, "This is the documentation of how to use the MSM-class \n next line")
+        text.insert(END, "Bye Bye.....")
+        text.pack()
+
+
+root.mainloop()
         
     def stationarydistribution(self):
         EW,EV = linalg.eig(transpose(T))
