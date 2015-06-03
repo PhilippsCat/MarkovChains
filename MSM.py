@@ -1,10 +1,148 @@
 import numpy as np
 import numpy.linalg as linalg
+import fractions as frac
+
+class InvalTransMatError(ValueError):
+    """Raised in ctor of MSM when the matrix 
+       doesn't conform to basic sanity checks.
+    """
+    pass
+
+def markovProp(T):
+    """Check if the matrix has the markov property.
+    """
+    if not (T.ndim == 2):
+        return False, "wrong number of dimensions"
+    d1, d2 = T.shape
+    if not (d1 == d2):
+        return False, "not a square matrix"
+    if not np.array_equal(np.sum(T,1), np.ones(len(T))):
+        return False, "columns don't sum up to one"
+    return True, "all good"
+
+def commClasses(g):
+    """ compute the communication classes
+        of the graph, given as a transition
+        matrix.
+    """
+
+    def dfs(graph, node, vis_nodes):
+        """depth first search (non-destructive)
+        """
+        g = np.copy(graph)
+        return dfs_destr(g, node, vis_nodes)
+
+
+    def dfs_destr(graph, node, vis_nodes):
+        """depth first search (destructive)
+        """
+        trans = graph[node] > 0
+        # deleting inbound edges == marking as visited 
+        graph[:, node] = 0
+        ret = []
+        for i in range(len(trans)):
+            if (trans[i] 
+                and (i not in vis_nodes)
+                and (i != node)):
+                    ret += dfs_destr(graph, i, vis_nodes)
+        ret.append(node)
+        return ret
+
+    def check(V, n): 
+        """checking for next free node in V
+        """
+        for node in range(n):
+            if node not in V:
+                return node
+        return -1
+    
+    # avoiding destruction of graph
+    graph = np.copy(g)
+    communic_classes = []
+    V = []
+    n = len(graph)
+    
+    # explore all nodes
+    node = check(V, n)
+    while (node != -1):
+        V += dfs(graph, node, V)
+        node = check(V, n)
+        
+    # continue in transposed graph
+    graph_t = graph.transpose()
+    while V:
+        node = V[-1]
+        C = dfs(graph_t, node, [])
+        communic_classes.append(C)
+        for i in C:
+            if i in V: V.remove(i)
+            graph_t[i,:] = 0 
+            graph_t[:,i] = 0
+    
+    return communic_classes
+
+def period(g):
+    """ computes the period of an irreducible 
+        markov matrix.
+        algorithm taken from:
+        Graph-Theoretic Analysis of Finite Markov Chains,
+        Jarvis and Shier,
+        chapter 17
+    """
+
+    def val(a, b):
+        return a - b + 1
+
+    def bfs(node, lvl, lvls, per):
+        trans = g[node] > 0
+        nextN = []
+        for v in range(len(trans)):
+            if trans[v]:
+                if (v in lvls.keys()):
+                    p = val(lvls[node],lvls[v])
+                    if (per == 0):
+                        # set initial period
+                        per = p
+                    if (p == 1): 
+                        return 1
+                    if (p > 1): 
+                        per = frac.gcd(per,p)
+                else:
+                    nextN.append(v)
+                    lvls[v] = lvl + 1
+
+        if nextN:
+            pers = []
+            for v in nextN:
+                pers.append(bfs(v, lvl + 1, lvls, per))
+            return min(pers) 
+        else:
+            return per
+
+    return bfs(0, 0, {0 : 0}, 0)
+
 class MSM:
     
     def __init__(self,T):
+        """In this implementation only irreducible, aperiodic
+           and reversible markov matrices can be created.
+           Trying to create a MSM object that does not fulfill
+           those properties will lead to an InvalTransMatError.
+        """
+        mP, msg = markovProp(T)
+        if not mP:
+            raise InvalTransMatError("not a markov matrix: " + msg)
         self.T = T
-
+        self.pi = self.statDist()
+        if not (len(commClasses(T)) == 1):
+            raise InvalTransMatError("matrix is reducible")
+        if not (period(T) == 1):
+            raise InvalTransMatError("matrix is aperiodic")
+        PI = np.diag(self.pi)
+        if not np.array_equal(np.dot(PI, T), np.dot(T.transpose(),PI)): 
+            # detailed balance condition
+            raise InvalTransMatError("matrix is not reversible")
+ 
     def statDist(self):
         """ Return the stationary distribution of the given Markov chain.
             Therefore, we compute the eigenvector of the transposed transition
@@ -34,7 +172,7 @@ class MSM:
         qplus  = np.ones(len(T))
         n = len(qminus)
         f = np.zeros(shape=(n,n)) # discrete prob. curr.
-        pi = self.statDist()
+        pi = self.pi
         effprobcur = np.zeros(shape=(n,n))
         FAB = 0
         for i in range(0,n):
