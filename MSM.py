@@ -50,3 +50,40 @@ class MSM:
 
         KAB = FAB / dot(pi,qminus)
         return f, effprobcur, FAB, KAB
+    
+    
+    def hitting_prob(self, Set_A, Set_B = []):
+        """ function gets a numpy.matrix and a hitting set Set_A [x,y,z...] as well as a 
+        'Non hitting set' Set_B for computing comittors
+        it is assumed that the states starting with '1' and not '0'"""    
+        coefficients = []
+        numberOfStates = len(self.T)
+        results = [0] * numberOfStates
+        
+        #take over all transition probabilities
+        for i in range(numberOfStates):
+            a = self.T[i]
+            a[i] = a[i] - 1
+            coefficients.append(a)  
+            
+        #set the probabilities for states in A to 1
+        for i in range(len(Set_A)):
+            b = [0] * numberOfStates
+            b[Set_A[i] - 1] = 1
+            coefficients[Set_A[i] - 1] = b
+            results[Set_A[i] - 1] = 1
+        
+        #set the probabilities for states in B to 0    
+        for i in range(len(Set_B)):
+            c = [0] * numberOfStates
+            c[Set_B[i] - 1] = 1
+            coefficients[Set_B[i] - 1] = c
+     
+        #make sure that the probabilities for absorbing nodes is 0 (as long as it is not in A) 
+        for i in range(len(coefficients)):
+            if coefficients[i] == [0] * numberOfStates:
+                coefficients[i][i] = 1
+
+        hitting_prob = np.linalg.solve(coefficients, results)
+     
+        return hitting_prob
