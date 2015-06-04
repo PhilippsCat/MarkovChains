@@ -17,8 +17,8 @@ def markovProp(T):
     d1, d2 = T.shape
     if not (d1 == d2):
         return False, "not a square matrix"
-    if not np.array_equal(np.sum(T,2), np.ones(len(T))):
-        return False, "rows don't sum up to one"
+    if not np.array_equal(np.sum(T,1), np.ones(len(T))):
+        return False, "columns don't sum up to one"
     return True, "all good"
 
 def commClasses(g):
