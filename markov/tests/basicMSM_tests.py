@@ -2,7 +2,7 @@
     of a matrix or the corresponding MSM object.
 """ 
 
-import markovchains.modules.analysis as ana
+import markov.modules.analysis as ana
 from nose.tools import raises
 import numpy as np
 
