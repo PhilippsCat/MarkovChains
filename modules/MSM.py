@@ -17,7 +17,7 @@ def markovProp(T):
     d1, d2 = T.shape
     if not (d1 == d2):
         return False, "not a square matrix"
-    if not np.array_equal(np.sum(T,1), np.ones(len(T))):
+    if not np.allclose(np.sum(T,1), np.ones(len(T))):
         return False, "rows don't sum up to one"
     return True, "all good"
 
@@ -136,7 +136,7 @@ class MSM:
         if not (period(T) == 1):
             raise InvalTransMatError("matrix is aperiodic")
         PI = np.diag(self.pi)
-        if not np.array_equal(np.dot(PI, T), np.dot(T.transpose(),PI)): 
+        if not np.allclose(np.dot(PI, T), np.dot(T.transpose(),PI)): 
             # detailed balance condition
             raise InvalTransMatError("matrix is not reversible")
  
