@@ -21,6 +21,10 @@ def kmeans(data, k):
     
     def calculate_centroids(means):
         for i in range(0,k):
+                # if there is no point associated to the current mean,
+                #don't change anything
+                if np.sum(point_to_means==i)==0:        
+                    continue
                 means[:,i]=np.sum(data[:, point_to_means==i],1)/np.sum(point_to_means==i)
         return means
 
