@@ -1,3 +1,4 @@
+import numpy as np
 def count_transitions(chain):
     n_markov_states = len(set(chain)) 
     count_matrix = np.zeros((n_markov_states,n_markov_states))
