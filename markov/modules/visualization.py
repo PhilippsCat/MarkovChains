@@ -1,7 +1,7 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
 def plot_chain_frequencies(chain):
-    import matplotlib.pyplot as plt
-    import numpy as np
-    
     states = list(set(chain))
     numofstates = len(states)
     count = np.zeros([numofstates,1])
@@ -18,7 +18,6 @@ def plot_chain_frequencies(chain):
     return count
     
     
-    import numpy as np
 
 def rank_by_std(T):
     n = T.shape[0]
