@@ -14,4 +14,5 @@ def plot_chain_frequencies(chain):
     plt.plot(sorted(count, reverse=True))
     plt.ylabel("Number of occurrences")
     plt.axis([0, max(states), 0, max(chain)])
+    plt.show()
     return count
