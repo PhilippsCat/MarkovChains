@@ -7,4 +7,4 @@ def regspace(X , dmin):
     for t in range(2,T):
         if ( np.min ( np.linalg.norm(X[:,t] - Y)) < dmin):
             Y.append(X[:,t])
-    return Y
+    return np.asarray(Y)
