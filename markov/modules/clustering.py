@@ -14,7 +14,7 @@ def kmeans(data, k):
     def closest_means(means):
         assoc_means = np.ones(n)
         for i in range(0,n):
-            dists = np.linalg.norm(np.repeat(data[i],k,axis=0)-means,axis=1)
+            dists = np.linalg.norm(np.tile(data[i],(k,1))-means,axis=1)
             assoc_means[i] = np.argmin(dists)
         return assoc_means
     
