@@ -25,3 +25,10 @@ def rank_by_std(T):
     for i in range(0,n):
         variances[i] = np.std(T[i,:])
     return np.lexsort((range(0,n),variances)), variances
+
+def plot_2d_with_clusters(data, clusters):
+    """ Plots a scatter plot of 2d data where the points are colored
+    as their clusters suggest.
+    """
+    plt.scatter(data[:,0],data[:,1], c=clusters[0])
+    plt.show()
