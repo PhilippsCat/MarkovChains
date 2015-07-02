@@ -17,12 +17,16 @@ def main():
         help="use db estimator to produce reversible matrix")
     p.add_argument("dataPath", 
         help="path to data matrix")
+    p.add_argument("--slide-win", dest="slide_win", default=False, action="store_true",
+        help="use the sliding window method in count_transitions")
+    p.add_argument("--lag", dest="lag", default=1, type=int,
+        help="set the lag in count_transitions")
     args = p.parse_args()
 
     # run the pipeline (clustering, estimation, analysis)
     rawData = np.loadtxt(args.dataPath, ndmin=2)
     pt_to_cc, cc = cluster.kmeans(rawData, args.Ncc)
-    countMat = estimator.count_transitions(pt_to_cc)
+    countMat = estimator.count_transitions(pt_to_cc, args.lag, args.slide_win)
     if args.use_dbEst:
         transMat = estimator.db_estimator(countMat, max_iter=args.dbMaxIter)
     else:
