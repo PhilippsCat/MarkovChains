@@ -22,10 +22,11 @@ def main():
     # run the pipeline (clustering, estimation, analysis)
     rawData = np.loadtxt(args.dataPath, ndmin=2)
     pt_to_cc, cc = cluster.kmeans(rawData, args.Ncc)
+    countMat = estimator.count_transitions(pt_to_cc)
     if args.use_dbEst:
-        transMat = estimator.db_estimator(pt_to_cc, max_iter=args.dbMaxIter)
+        transMat = estimator.db_estimator(countMat, max_iter=args.dbMaxIter)
     else:
-        transMat = estimator.estimate_transitionmatrix(pt_to_cc)
+        transMat = estimator.estimate_transitionmatrix(countMat)
     anaMat = analysis.MSM(transMat)
 
     print "stationary distribution: \n" + str(anaMat.statDist())
