@@ -9,7 +9,7 @@ def kmeans(data, k):
     contains the centers of the clusters.
     """
     n = np.shape(data)[0] 
-    means = data[np.random.choice(n,k)]
+    means = data[np.random.choice(n,k, replace=False)]
 
     def closest_means(means):
         assoc_means = np.ones(n)
