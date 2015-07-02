@@ -1,24 +1,31 @@
 import numpy as np
-def count_transitions(chain):
+def count_transitions(chain, lag=1, sliding=False):
     n_markov_states = len(set(chain)) 
+    if lag>1 and not sliding:
+        chain=chain[range(0, len(chain), lag)]
+        n_markov_states = len(set(chain)) # might have changed 
     count_matrix = np.zeros((n_markov_states,n_markov_states))
-    for i in xrange(1, chain.shape[0]):
-        count_matrix[chain[i-1]][chain[i]] = count_matrix[chain[i-1]][chain[i]] + 1
+
+    if sliding:
+        step = lag
+    else:
+        step = 1
+
+    for i in xrange(step, chain.shape[0]):
+        count_matrix[chain[i-step]][chain[i]] = count_matrix[chain[i-step]][chain[i]] + 1
     return count_matrix
 
-def estimate_transitionmatrix(chain):
-    count_matrix = count_transitions(chain)
+def estimate_transitionmatrix(count_matrix):
     for i in range(0,count_matrix.shape[0]):
         count_matrix[i,:] = np.true_divide(count_matrix[i,:],sum(count_matrix[i,:]))
     return count_matrix
 
-def db_estimator(chain, epsilon=1e-8, max_iter=50):
+def db_estimator(count_matrix, epsilon=1e-8, max_iter=50):
     """ 
     Estimate a reversible transition matrix from a given chain
     """
-    count_matrix = count_transitions(chain)
-    n = len(set(chain))
-    x_old = estimate_transitionmatrix(chain) 
+    n = count_matrix.shape[0] 
+    x_old = estimate_transitionmatrix(count_matrix) 
     x_new = np.zeros([n,n])
     c_rows = np.sum(count_matrix,1)
 
