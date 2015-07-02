@@ -1,6 +1,5 @@
 import numpy as np
 def count_transitions(chain, lag=1, sliding=False):
-    # TODO: lag and sliding. For a lag, all data points between are dropped
     n_markov_states = len(set(chain)) 
     if lag>1 and not sliding:
         chain=chain[range(0, len(chain), lag)]
@@ -25,8 +24,8 @@ def db_estimator(count_matrix, epsilon=1e-8, max_iter=50):
     """ 
     Estimate a reversible transition matrix from a given chain
     """
-    n = len(set(chain))
-    x_old = estimate_transitionmatrix(chain) 
+    n = count_matrix.shape[0] 
+    x_old = estimate_transitionmatrix(count_matrix) 
     x_new = np.zeros([n,n])
     c_rows = np.sum(count_matrix,1)
 
