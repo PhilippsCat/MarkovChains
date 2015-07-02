@@ -29,7 +29,7 @@ def regspace(X , dmin):
         closest_center_index = np.argmin( np.absolute(X[:,i]*np.ones(len(Y)) - Y.transpose()))
         closest_centers[i] = Y[closest_center_index]
     
-    print closest_centers
+    
     # 'uniques' is the list of states that occur in 'closest_centers'
     uniques = list(set(closest_centers))
     # we map the values in 'closest_centers' to integer values
