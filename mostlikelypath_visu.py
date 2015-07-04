@@ -11,5 +11,6 @@ def mostlikelypath_visu(start, T, pathlength):
         dispmatrix[i,:] = dispmatrix[i,:] / sum(dispmatrix[i,:])
         T = np.dot(T,T) 
     plt.imshow(dispmatrix.transpose())
+    plt.show()
     return
     
