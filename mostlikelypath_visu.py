@@ -1,3 +1,4 @@
+import numpy as np
 def mostlikelypath_visu(start, T, pathlength):
     M = np.zeros((pathlength,T.shape[0]))
     M[0,:] = start
@@ -9,6 +10,3 @@ def mostlikelypath_visu(start, T, pathlength):
         T = dot(T,T) 
     plt.imshow(dispmatrix.transpose())
     return
-    
-    
-mostlikelypath_visu(np.array([0,0,1,0,0]) , ET, 50)
