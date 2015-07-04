@@ -43,6 +43,12 @@ def regspace(X , dmin):
     uniques = np.unique(struct)
     uniques = uniques.view(closest_centers.dtype).reshape(-1, ncols)
     
+<<<<<<< HEAD
+=======
+    
+    # 'uniques' is the list of states that occur in 'closest_centers'
+    uniques = list(set(closest_centers))
+>>>>>>> 90a75ee42f27a93f5a0939fa2a5c2b1b0e54f6a0
     # we map the values in 'closest_centers' to integer values
     int_states = np.zeros(T)
     for j  in range(0,T):
