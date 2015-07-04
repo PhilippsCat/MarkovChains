@@ -164,13 +164,13 @@ class MSM:
         tscale = -1*np.ones(len(EW))/np.log(EW)
         return tscale
 
-    def tpt(self, set):
-        qminus = np.ones(len(T))
-        qplus  = np.ones(len(T))
+    def tpt(self, setA, setB):
+        qminus = hitting_prob(setA, setB)
+        qplus  = hitting_prob(setB, setA)
         n = len(qminus)
-        f = np.zeros(shape=(n,n)) # discrete prob. curr.
+        f = np.zeros((n,n)) # discrete prob. curr.
         pi = self.pi
-        effprobcur = np.zeros(shape=(n,n))
+        effprobcur = np.zeros((n,n))
         FAB = 0
         for i in range(0,n):
             for j in range(0,n):
@@ -183,7 +183,7 @@ class MSM:
                     if (i in set):
                         FAB = FAB + effprobcur[i,j]
 
-        KAB = FAB / dot(pi,qminus)
+        KAB = FAB / np.dot(pi,qminus)
         return f, effprobcur, FAB, KAB
     
     
