@@ -165,26 +165,27 @@ class MSM:
         return tscale
 
     def tpt(self, setA, setB):
-        qminus = hitting_prob(setA, setB)
-        qplus  = hitting_prob(setB, setA)
-        n = len(qminus)
+        n = self.T.shape[0]
+        qminus = self.hitting_prob(setA, setB) # backward committor
+        qplus  = self.hitting_prob(setB, setA) # forward committor
         f = np.zeros((n,n)) # discrete prob. curr.
-        pi = self.pi
+        pi = self.pi # stationary distribution
         effprobcur = np.zeros((n,n))
-        FAB = 0
-        for i in range(0,n):
-            for j in range(0,n):
-                if (i != j):
+        FAB = 0 # average total number of reactive trajectories
+            for i in range(0,n):
+                for j in range(0,n):
+                    if (i != j):
+                        f[i,j] = pi[i]*qminus[i]*T[i,j]*qplus[j]
+                        f[j,i] = pi[j]*qminus[j]*T[j,i]*qplus[i]
+                        effprobcur[i,j] = max(0,(f[i,j]- f[j,i]))
 
-                    f[i,j] = pi[i]*qminus[i]*T[i,j]*qplus[j]
-                    f[j,i] = pi[j]*qminus[j]*T[j,i]*qplus[i]
-                    effprobcur[i,j] = max(0,(f[i,j]- f[j,i]))
-
-                    if (i in set):
-                        FAB = FAB + effprobcur[i,j]
-
-        KAB = FAB / np.dot(pi,qminus)
-        return f, effprobcur, FAB, KAB
+                        if (i in setA):
+                            FAB = FAB + effprobcur[i,j]
+            disprobcur = f  
+        KAB = FAB / np.dot(pi,qminus) # transition rate
+        TAB = 1/KAB #mean first passage time
+        
+        return disprobcur, effprobcur, FAB, KAB, TA
     
     
     def hitting_prob(self, Set_A, Set_B = []):
