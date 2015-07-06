@@ -222,3 +222,15 @@ class MSM:
         hitting_prob = np.linalg.solve(coefficients, results)
      
         return hitting_prob
+
+    def pcca(self, m):
+        """ Uses PyEMMA's PCCA to give metastable sets
+        """
+        try:
+            import pyemma.msm as mm 
+        except ImportError:
+            print "Error: PyEMMA must be installed."
+            return 0
+        model = mm.markov_model(self.T)
+        model.pcca(m)
+        return model.metastable_memberships
