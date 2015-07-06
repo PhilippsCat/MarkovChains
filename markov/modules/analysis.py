@@ -166,26 +166,28 @@ class MSM:
 
     def tpt(self, setA, setB):
         n = self.T.shape[0]
-        qminus = self.hitting_prob(setA, setB) # backward committor
-        qplus  = self.hitting_prob(setB, setA) # forward committor
-        f = np.zeros((n,n)) # discrete prob. curr.
-        pi = self.pi # stationary distribution
-        effprobcur = np.zeros((n,n))
-        FAB = 0 # average total number of reactive trajectories
-            for i in range(0,n):
-                for j in range(0,n):
-                    if (i != j):
-                        f[i,j] = pi[i]*qminus[i]*T[i,j]*qplus[j]
-                        f[j,i] = pi[j]*qminus[j]*T[j,i]*qplus[i]
-                        effprobcur[i,j] = max(0,(f[i,j]- f[j,i]))
+        qminus = self.hitting_prob(setA, setB) # backward and forward committor
+        qplus  = self.hitting_prob(setB, setA)
+        f = np.zeros((n,n)) # Discrete prob. curr.
+        pi = self.pi
+        T = self.T
+        effprobcur = np.zeros((n,n)) #Effective prob. curr.
+        FAB = 0 # Average total number of reactive trajectories
+        for i in range(0,n):
+            for j in range(0,n):
+                if (i != j):
 
-                        if (i in setA):
-                            FAB = FAB + effprobcur[i,j]
-            disprobcur = f  
-        KAB = FAB / np.dot(pi,qminus) # transition rate
-        TAB = 1/KAB #mean first passage time
-        
-        return disprobcur, effprobcur, FAB, KAB, TA
+                    f[i,j] = pi[i]*qminus[i]*T[i,j]*qplus[j]
+                    f[j,i] = pi[j]*qminus[j]*T[j,i]*qplus[i]
+                    effprobcur[i,j] = max(0,(f[i,j]- f[j,i]))
+
+                    if (i in setA):
+                        FAB = FAB + effprobcur[i,j]
+        disprobcur = f
+        KAB = FAB / np.dot(pi,qminus) # Transition rate
+        TAB = 1 / KAB # Mean first passage time
+            
+        return disprobcur, effprobcur, FAB, KAB, TAB
     
     
     def hitting_prob(self, Set_A, Set_B = []):
