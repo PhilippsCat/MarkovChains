@@ -3,7 +3,7 @@ import numpy as np
 def regspace(X , dmin):
 
 
-    
+    #This is the regular space clustering alogirthm. It needs a one- or multi-dimensional numpy-array X and a scalar value dmin
     # Reshape the data. It is taken care of the three types of one-dimensional data: [x,y,z], [[x,y,z]] and [ [x], [y], [z]]
     if (len(X.shape) == 2):
         len_X = X.shape[0]
@@ -45,12 +45,9 @@ def regspace(X , dmin):
     
 
     
-    # 'uniques' is the list of states that occur in 'closest_centers'
-    uniques = list(set(closest_centers))
     # we map the values in 'closest_centers' to integer values
     int_states = np.zeros(T)
     for j  in range(0,T):
-        na = closest_centers[j,:]
         int_states[j] = (np.where(np.all(uniques==closest_centers[j,:],axis=1)))[0]
 
 
