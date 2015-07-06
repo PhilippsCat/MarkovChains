@@ -164,14 +164,15 @@ class MSM:
         tscale = -1*np.ones(len(EW))/np.log(EW)
         return tscale
 
-    def tpt(self, set):
-        qminus = np.ones(len(T))
-        qplus  = np.ones(len(T))
-        n = len(qminus)
-        f = np.zeros(shape=(n,n)) # discrete prob. curr.
+    def tpt(self, setA, setB):
+        n = self.T.shape[0]
+        qminus = self.hitting_prob(setA, setB) # backward and forward committor
+        qplus  = self.hitting_prob(setB, setA)
+        f = np.zeros((n,n)) # Discrete prob. curr.
         pi = self.pi
-        effprobcur = np.zeros(shape=(n,n))
-        FAB = 0
+        T = self.T
+        effprobcur = np.zeros((n,n)) #Effective prob. curr.
+        FAB = 0 # Average total number of reactive trajectories
         for i in range(0,n):
             for j in range(0,n):
                 if (i != j):
@@ -180,11 +181,13 @@ class MSM:
                     f[j,i] = pi[j]*qminus[j]*T[j,i]*qplus[i]
                     effprobcur[i,j] = max(0,(f[i,j]- f[j,i]))
 
-                    if (i in set):
+                    if (i in setA):
                         FAB = FAB + effprobcur[i,j]
-
-        KAB = FAB / dot(pi,qminus)
-        return f, effprobcur, FAB, KAB
+        disprobcur = f
+        KAB = FAB / np.dot(pi,qminus) # Transition rate
+        TAB = 1 / KAB # Mean first passage time
+            
+        return disprobcur, effprobcur, FAB, KAB, TAB
     
     
     def hitting_prob(self, Set_A, Set_B = []):
