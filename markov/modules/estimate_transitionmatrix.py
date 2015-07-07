@@ -16,9 +16,10 @@ def count_transitions(chain, lag=1, sliding=False):
     return count_matrix
 
 def estimate_transitionmatrix(count_matrix):
-    for i in range(0,count_matrix.shape[0]):
-        count_matrix[i,:] = np.true_divide(count_matrix[i,:],sum(count_matrix[i,:]))
-    return count_matrix
+    trans_matrix = np.array(count_matrix, copy=True)
+    for i in range(0,trans_matrix.shape[0]):
+        trans_matrix[i,:] = np.true_divide(trans_matrix[i,:],sum(trans_matrix[i,:]))
+    return trans_matrix
 
 def db_estimator(count_matrix, epsilon=1e-8, max_iter=50):
     """ 
