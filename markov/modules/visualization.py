@@ -74,3 +74,68 @@ def plot_TR_matrix(M, normalize = False):
     plt.imshow(TR)
     plt.show()
     return TR
+    
+    def GDFoutputSimple(transition_Matrix, outputFolder):
+    
+    SimpleGraphOutput = open(outputFolder + '\SimpleGraphOutput.gdf', 'w')
+    
+    SimpleGraphOutput.writelines('nodedef>name VARCHAR,label VARCHAR' + "\n")
+    
+    for i in range(len(transition_Matrix)):
+        SimpleGraphOutput.writelines(str(i) + ',' + str(i) + "\n")
+        
+    SimpleGraphOutput.writelines('edgedef>node1 VARCHAR,node2 VARCHAR, label VARCHAR' + "\n")
+    
+    for i in range(len(transition_Matrix)):
+        for j in range(len(transition_Matrix)):
+            SimpleGraphOutput.writelines(str(i) + ',' + str(j) + ',' + str(transition_Matrix[i][j]) + "\n")
+            
+    SimpleGraphOutput.close()
+        
+        
+def GDFoutputWithWeights(transition_Matrix, outputFolder):
+    
+    GraphOutputwithWeights = open(outputFolder + '\GraphOutputwithWeightst.gdf', 'w')
+    
+    GraphOutputwithWeights.writelines('nodedef>name VARCHAR,label VARCHAR' + "\n")
+    
+    for i in range(len(transition_Matrix)):
+        GraphOutputwithWeights.writelines(str(i) + ',' + str(i) + "\n")
+        
+    GraphOutputwithWeights.writelines('edgedef>node1 VARCHAR,node2 VARCHAR, label VARCHAR, weight DOUBLE' + "\n")
+    
+    for i in range(len(transition_Matrix)):
+        for j in range(len(transition_Matrix)):
+            GraphOutputwithWeights.writelines(str(i) + ',' + str(j) + ',' + str(transition_Matrix[i][j]) + ',' + str(transition_Matrix[i][j]) + "\n")
+            
+    GraphOutputwithWeights.close()
+    
+    
+def GDFoutputAfterNSteps(transition_Matrix, timesteps, outputFolder):
+    actualTransition = transition_Matrix
+    GraphOutput3 = open(outputFolder + '\GraphOutput3.gdf', 'w')
+    GraphOutput3.writelines('nodedef>name VARCHAR,label VARCHAR, weight DOUBLE' + "\n")    
+    
+    for i in range(timesteps):
+        actualTransition = np.dot(actualTransition, transition_Matrix)
+      
+    weightsNodes = []  
+    
+    for i in range(len(transition_Matrix)):
+        nodeWeight = 0
+        
+        for j in range(len(transition_Matrix)):
+            nodeWeight = nodeWeight + transition_Matrix[j][i]
+        
+        weightsNodes.append(nodeWeight)
+            
+    for i in range(len(transition_Matrix)):
+        GraphOutput3.writelines(str(i) + ',' + str(i) + ',' + str(weightsNodes[i]) + "\n")
+        
+    GraphOutput3.writelines('edgedef>node1 VARCHAR,node2 VARCHAR, label VARCHAR, weight DOUBLE' + "\n")    
+    
+    for i in range(len(transition_Matrix)):
+        for j in range(len(transition_Matrix)):
+            GraphOutput3.writelines(str(i) + ',' + str(j) + ',' + str(transition_Matrix[i][j]) + ',' + str(transition_Matrix[i][j]) + "\n")
+            
+    GraphOutput3.close()
