@@ -52,3 +52,25 @@ def mostlikelypath_visu(start, T, pathlength):
     plt.imshow(dispmatrix.transpose())
     plt.show()
     return
+
+    
+def plot_TR_matrix(M, normalize = False):
+# This method computes the transition rates  between all states of the Markov model.
+# It assembles a matrix which in entry ij contains the TR of state i to state j. The matrix
+# is then plotted. By setting the bool 'normalize' to 'True', the rows of the matrix are
+# normalized
+    n,m = M.T.shape
+    TR = np.zeros((n,m))
+    for i in range(0,n):
+        for j in range(0,m):
+            if (i is not j):
+                disprobcur, effprobcur, FAB, KAB, TAB = M.tpt(np.array([i]),np.array([j]))
+                TR[i,j] = KAB
+    
+    if (normalize):
+        row_sums = TR.sum(axis=1)
+        TR = TR / row_sums[:, np.newaxis]
+    
+    plt.imshow(TR)
+    plt.show()
+    return TR
