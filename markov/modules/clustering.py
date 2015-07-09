@@ -31,17 +31,73 @@ def closest_means(data, means):
         dists = np.linalg.norm(np.tile(data[i],(k,1))-means,axis=1)
         assoc_means[i] = np.argmin(dists)
     return assoc_means
+    
+# this method is only relevant, 
+#when all of the data points in the dimension are either all positive or negative
+#
+# input:
+# data = np.array([[x1,x2,...],[y1,y2,...],...])
+# centers = number of desired centers = integer
+#
+#output:
+#[array([x1,x2,...]), array([y1,y2,...]), ...]
+
+def EuclidianCenters (data, centers):
+    
+    dim = len(data[0])
+    null = np.array([0] * dim)
+    datapoints = len(data)
+    dist_id_list = []
+        
+    
+    for i in range(datapoints):
+        dist = np.linalg.norm(data[i]-null)
+        dist_id_list.append([dist,i])
+        
+    dist_id_list_sorted = sorted(dist_id_list, key=lambda tup: tup[0])
+    
+    partitionsize = int(float(datapoints / centers))
+    centerpoints = []  
+    
+    for i in range(centers):
+        thispartition = []
+        centerofpartition = np.array([0] * dim)
+        
+        for j in range(partitionsize):
+            thispartition.append(data[dist_id_list_sorted[i * partitionsize + j][1]])
+        
+        if i == centers - 1:
+            for k in range(datapoints - partitionsize * (i + 1)):
+                thispartition.append(data[dist_id_list_sorted[(i + 1) * partitionsize + k][1]])
+            
+        for k in range (len(thispartition)):            
+            for l in range (dim):
+                centerofpartition[l] = centerofpartition[l] + thispartition[k][l]
+          
+        print(centerofpartition)  
+        centerofpartition = centerofpartition / float(len(thispartition))
+        centerpoints.append(centerofpartition)
+        
+    return centerpoints
+            
  
-def kmeans(data, k):
+def kmeans(data, k, method = 1):
     """
     Performs a k-means clustering on a given data set, which should have the
     dimension n x d, where d is the dimension of each data point and n is the
     total number of data points. k is the number of clusters.
     Return: Array that maps each data point to a cluster, array which
     contains the centers of the clusters.
+    Method: 1: choose means randomly from data
+            2: choose meand according to EuclidianCenters
     """
     n = np.shape(data)[0] 
-    means = data[np.random.choice(n,k, replace=False)]
+    
+    if method == 1:
+        means = data[np.random.choice(n,k, replace=False)]
+   
+    if method == 2:
+        means = EuclidianCenters (data, k)
    
     ptm_old = np.zeros(n)
     while True: 
