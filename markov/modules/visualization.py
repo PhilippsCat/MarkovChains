@@ -32,3 +32,16 @@ def plot_2d_with_clusters(data, clusters):
     """
     plt.scatter(data[:,0],data[:,1], c=clusters[0])
     plt.show()
+
+def plot_stationary(stat):
+    plt.bar(range(0,len(stat)),stat, alpha=0.5)
+    plt.xlabel("State")
+    plt.ylabel("Probability")
+    plt.title("Stationary distribution")
+    plt.show()
+
+def plot_timescales(timescales):
+    plt.plot(range(1,len(timescales)),timescales[1:],"*--")
+    plt.xlabel("Eigenvalue $\mu_i$")
+    plt.ylabel("Implied timescale")
+    plt.show()
