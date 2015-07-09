@@ -81,7 +81,7 @@ def EuclidianCenters (data, centers):
     return centerpoints
             
  
-def kmeans(data, k, method):
+def kmeans(data, k, method = 1):
     """
     Performs a k-means clustering on a given data set, which should have the
     dimension n x d, where d is the dimension of each data point and n is the
