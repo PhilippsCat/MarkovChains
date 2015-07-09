@@ -26,6 +26,9 @@ def plot_chain_frequencies(chain):
     
 
 def rank_by_std(T):
+# This method ranks the states by the variances that their respective rows
+# in the transition matrices have. The last state in the output is the state with
+# the highest variances between transition probabilities
     n = T.shape[0]
     variances = np.zeros(n)
     for i in range(0,n):
@@ -40,15 +43,19 @@ def plot_2d_with_clusters(data, clusters):
     plt.show()
     
 def mostlikelypath_visu(start, T, pathlength):
+# This method needs a given start distribution and plots the most probable paths
+# that the induced process is going to take in the brightest colors.
     M = np.zeros((pathlength,T.shape[0]))
-    M[0,:] = np.zeros((1,T.shape[0]))
-    M[0,start] = 1
+    Tori = T
+    #M[0,:] = np.zeros((1,T.shape[0]))
+    #M[0,start] = 1
+    M[0,:] = start
     dispmatrix = M
     for i in range(1,pathlength):
         M[i,:] = np.dot(T.transpose(),M[0,:])
-        dispmatrix[i,:] = M[i,:]*M[i,:]*M[i,:]*M[i,:]
+        dispmatrix[i,:] = M[i,:]*M[i,:]
         dispmatrix[i,:] = dispmatrix[i,:] / sum(dispmatrix[i,:])
-        T = np.dot(T,T) 
+        T = np.dot(T,Tori) 
     plt.imshow(dispmatrix.transpose())
     plt.show()
     return
@@ -75,7 +82,7 @@ def plot_TR_matrix(M, normalize = False):
     plt.show()
     return TR
     
-    def GDFoutputSimple(transition_Matrix, outputFolder):
+def GDFoutputSimple(transition_Matrix, outputFolder):
     
     SimpleGraphOutput = open(outputFolder + '\SimpleGraphOutput.gdf', 'w')
     
@@ -139,3 +146,18 @@ def GDFoutputAfterNSteps(transition_Matrix, timesteps, outputFolder):
             GraphOutput3.writelines(str(i) + ',' + str(j) + ',' + str(transition_Matrix[i][j]) + ',' + str(transition_Matrix[i][j]) + "\n")
             
     GraphOutput3.close()
+
+
+def plot_stationary(stat):
+    plt.bar(range(0,len(stat)),stat, alpha=0.5)
+    plt.xlabel("State")
+    plt.ylabel("Probability")
+    plt.title("Stationary distribution")
+    plt.show()
+
+def plot_timescales(timescales):
+    plt.plot(range(1,len(timescales)),timescales[1:],"*--")
+    plt.xlabel("Eigenvalue $\mu_i$")
+    plt.ylabel("Implied timescale")
+    plt.show()
+

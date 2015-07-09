@@ -158,10 +158,9 @@ class MSM:
         """
         return linalg.eigvals(self.T) 
     
-    # IS THiS REALLY WHAT WE WANT? Suppose only 2nd time scale is of interest
     def timescales(self):
         EW = self.eigenvalues()
-        tscale = -1*np.ones(len(EW))/np.log(EW)
+        tscale = -1*np.ones(len(EW))/np.log(np.abs(EW))
         return tscale
 
     def tpt(self, setA, setB):

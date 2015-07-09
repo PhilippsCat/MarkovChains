@@ -11,4 +11,4 @@ def test_pcca():
     count   = estimate.count_transitions(chain)
     T       = estimate.db_estimator(count)
     M = MSM(T)
-    assert_true(M.pcca(m).shape == (5,4))
+    assert_true(M.pcca(m).shape == (k,m))
