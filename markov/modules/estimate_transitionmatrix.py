@@ -74,5 +74,4 @@ def db_estimator_beta(chain, epsilon=1e-8, max_iter=50):
         row_sum = np.sum(x_new[i,:])
         if row_sum != 0:
             x_new[i,:] = x_new[i,:] / row_sum
-    #x_new = x_new / np.sum(x_new,1)[:, np.newaxis]
     return x_new
