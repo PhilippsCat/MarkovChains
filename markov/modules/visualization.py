@@ -81,7 +81,12 @@ def plot_TR_matrix(M, normalize = False):
     plt.imshow(TR)
     plt.show()
     return TR
-    
+  
+"""
+input: transition_Matrix = np.array([[x1,x2,...],[y1,y2,...],...])
+output: GDF files for import in gephi -> http://gephi.github.io/users/download/
+java 7 required
+"""  
 def GDFoutputSimple(transition_Matrix, outputFolder):
     
     SimpleGraphOutput = open(outputFolder + '\SimpleGraphOutput.gdf', 'w')
