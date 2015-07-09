@@ -81,3 +81,16 @@ def plot_TR_matrix(M, normalize = False):
     plt.imshow(TR)
     plt.show()
     return TR
+
+def plot_stationary(stat):
+    plt.bar(range(0,len(stat)),stat, alpha=0.5)
+    plt.xlabel("State")
+    plt.ylabel("Probability")
+    plt.title("Stationary distribution")
+    plt.show()
+
+def plot_timescales(timescales):
+    plt.plot(range(1,len(timescales)),timescales[1:],"*--")
+    plt.xlabel("Eigenvalue $\mu_i$")
+    plt.ylabel("Implied timescale")
+    plt.show()
