@@ -26,6 +26,9 @@ def plot_chain_frequencies(chain):
     
 
 def rank_by_std(T):
+# This method ranks the states by the variances that their respective rows
+# in the transition matrices have. The last state in the output is the state with
+# the highest variances between transition probabilities
     n = T.shape[0]
     variances = np.zeros(n)
     for i in range(0,n):
@@ -40,15 +43,19 @@ def plot_2d_with_clusters(data, clusters):
     plt.show()
     
 def mostlikelypath_visu(start, T, pathlength):
+# This method needs a given start distribution and plots the most probable paths
+# that the induced process is going to take in the brightest colors.
     M = np.zeros((pathlength,T.shape[0]))
-    M[0,:] = np.zeros((1,T.shape[0]))
-    M[0,start] = 1
+    Tori = T
+    #M[0,:] = np.zeros((1,T.shape[0]))
+    #M[0,start] = 1
+    M[0,:] = start
     dispmatrix = M
     for i in range(1,pathlength):
         M[i,:] = np.dot(T.transpose(),M[0,:])
-        dispmatrix[i,:] = M[i,:]*M[i,:]*M[i,:]*M[i,:]
+        dispmatrix[i,:] = M[i,:]*M[i,:]
         dispmatrix[i,:] = dispmatrix[i,:] / sum(dispmatrix[i,:])
-        T = np.dot(T,T) 
+        T = np.dot(T,Tori) 
     plt.imshow(dispmatrix.transpose())
     plt.show()
     return
