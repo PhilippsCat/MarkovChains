@@ -169,15 +169,15 @@ class MSM:
         qplus  = self.hitting_prob(setB, setA)
         f = np.zeros((n,n)) # Discrete prob. curr.
         pi = self.pi
-        T = self.T
+        U = self.T
         effprobcur = np.zeros((n,n)) #Effective prob. curr.
         FAB = 0 # Average total number of reactive trajectories
         for i in range(0,n):
             for j in range(0,n):
                 if (i != j):
 
-                    f[i,j] = pi[i]*qminus[i]*T[i,j]*qplus[j]
-                    f[j,i] = pi[j]*qminus[j]*T[j,i]*qplus[i]
+                    f[i,j] = pi[i]*qminus[i]*U[i,j]*qplus[j]
+                    f[j,i] = pi[j]*qminus[j]*U[j,i]*qplus[i]
                     effprobcur[i,j] = max(0,(f[i,j]- f[j,i]))
 
                     if (i in setA):
@@ -195,12 +195,12 @@ class MSM:
         coefficients = []
         numberOfStates = len(self.T)
         results = [0] * numberOfStates
-        
+
         #take over all transition probabilities
+        a = np.copy(self.T)
         for i in range(numberOfStates):
-            a = self.T[i]
-            a[i] = a[i] - 1
-            coefficients.append(a)  
+            a[i,i] = a[i,i] - 1
+            coefficients.append(a[i,:])  
             
         #set the probabilities for states in A to 1
         for i in range(len(Set_A)):
